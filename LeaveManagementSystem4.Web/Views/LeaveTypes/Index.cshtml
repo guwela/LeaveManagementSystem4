@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LeaveManagementSystem4.Web.Data.LeaveType>
+﻿@model IEnumerable<LeaveTypeReadOnlyVM>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,7 +16,8 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfDay)
+              
+                @Html.DisplayNameFor(model => model.First().NumberOfDay)
             </th>
             <th></th>
         </tr>
