@@ -1,24 +1,17 @@
-﻿using AutoMapper;
-using LeaveManagementSystem4.Web.Data;
-using LeaveManagementSystem4.Web.Models.LeaveTypes;
+﻿using LeaveManagementSystem4.Web.Models.LeaveTypes;
 using LeaveManagementSystem4.Web.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LeaveManagementSystem4.Web.Controllers
 {
+   [Authorize(Roles = "Administrator")]// Ensure that only users with the Administrator role can access this controller
     public class LeaveTypesController(ILeaveTypeService _leaveTypeService) : Controller
     {
-        
+
 
 
         // GET: LeaveTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index() 
         {
             // This method retrieves all leave types and returns them to the view.
             var viewData = await _leaveTypeService.GetAll();
@@ -81,7 +74,7 @@ namespace LeaveManagementSystem4.Web.Controllers
             // Fetch the leave type details using the service
             var leaveType = await _leaveTypeService.Get<LeaveTypeEditVM>(id.Value);
             if (leaveType == null)
-                {
+            {
                 return NotFound();
             }
             return View(leaveType);
@@ -152,7 +145,7 @@ namespace LeaveManagementSystem4.Web.Controllers
             await _leaveTypeService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
-        
-      
+
+
     }
 }
