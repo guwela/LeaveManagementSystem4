@@ -22,7 +22,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between"> 
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -30,13 +30,33 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                         @if (User.IsInRole(Roles.Administrator))
-                        { 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a>
+                        @if (User.IsInRole(Roles.Administrator))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Administrator
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-controller="Periods" asp-action="Index">Leave Periods</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-controller="LeaveAllocation" asp-action="Index">View Employee</a>
+                                    </li>
+                                </ul>
                             </li>
-                        } 
-                        
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="LeaveAllocation" asp-action="Details">View Allocations</a>
+                            </li>
+                        }
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

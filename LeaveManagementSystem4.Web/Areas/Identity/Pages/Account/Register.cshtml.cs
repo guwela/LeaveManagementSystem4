@@ -10,6 +10,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILeaveAllocationsService _leaveAllocationsService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
@@ -17,6 +18,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
+            ILeaveAllocationsService leaveAllocationsService,// This service is not used in this class, but it can be injected if needed.
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
@@ -24,6 +26,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            this._leaveAllocationsService = leaveAllocationsService;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -154,6 +157,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);
+                    await  _leaveAllocationsService.AllocateLeave(userId); // Ensure the leave allocation is done synchronously
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

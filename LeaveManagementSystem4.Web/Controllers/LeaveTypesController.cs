@@ -1,11 +1,13 @@
 ﻿using LeaveManagementSystem4.Web.Models.LeaveTypes;
-using LeaveManagementSystem4.Web.Services;
+using LeaveManagementSystem4.Web.Services.LeaveTypes;
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagementSystem4.Web.Controllers
 {
    [Authorize(Roles = "Administrator")]// Ensure that only users with the Administrator role can access this controller
-    public class LeaveTypesController(ILeaveTypeService _leaveTypeService) : Controller
+    public class LeaveTypesController(ILeaveTypesService _leaveTypeService) : Controller
     {
 
 

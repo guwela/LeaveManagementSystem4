@@ -65,6 +65,9 @@ namespace LeaveManagementSystem4.Web.Data
     
         
             // DbSet for LeaveType entity
-            public DbSet<LeaveType> LeaveTypes  { get; set; }
-        }
+            public DbSet<LeaveType> LeaveTypes  { get; set; } // DbSet for LeaveType entity
+            public DbSet<LeaveAllocation> LeaveAllocations { get; set; } // DbSet for LeaveAllocation entity
+            public DbSet<Period> Periods { get; set; } // DbSet for Period entity
+
+    }
     }

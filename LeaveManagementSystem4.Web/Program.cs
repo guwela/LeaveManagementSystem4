@@ -1,7 +1,8 @@
-using LeaveManagementSystem4.Web.Services;
+using LeaveManagementSystem4.Web.Services.LeaveAllocations;
+using LeaveManagementSystem4.Web.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-
+using LeaveManagementSystem4.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-// Register the leave type service
-builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
+
+
+builder.Services.AddScoped<ILeaveTypesService, LeaveTypesService>();
+builder.Services.AddScoped<ILeaveAllocationsService, LeaveAllocationsService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-// Register the leave type service
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
