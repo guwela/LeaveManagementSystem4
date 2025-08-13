@@ -1,8 +1,7 @@
 using LeaveManagementSystem4.Web.Services.LeaveAllocations;
 using LeaveManagementSystem4.Web.Services.Email;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-using LeaveManagementSystem4.Web.Data;
+using LeaveManagementSystem4.Web.Services.LeaveRequests;
+using LeaveManagementSystem4.Web.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +14,17 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddScoped<ILeaveTypesService, LeaveTypesService>();
 builder.Services.AddScoped<ILeaveAllocationsService, LeaveAllocationsService>();
+builder.Services.AddScoped<ILeaveRequestsService, LeaveRequestsService>(); // Assuming ILeaveRequestsService is defined in LeaveManagementSystem4.Web.Services.LeaveRequests namespace
+builder.Services.AddScoped<IPeriodsService, PeriodsService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminSupervisorOnly", policy => {
+    policy.RequireRole(Roles.Administrator, Roles.Supervisor);
+    });
+});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

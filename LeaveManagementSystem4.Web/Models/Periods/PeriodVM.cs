@@ -1,4 +1,4 @@
-﻿namespace LeaveManagementSystem4.Web.Models.Period;
+﻿namespace LeaveManagementSystem4.Web.Models.Periods;
 
 public class PeriodVM
 {

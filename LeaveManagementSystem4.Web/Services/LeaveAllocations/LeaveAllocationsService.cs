@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.EntityFrameworkCore;
-using LeaveManagementSystem4.Web.Data;
-using LeaveManagementSystem4.Web.Models.LeaveAllocations;
-    
+
 
 namespace LeaveManagementSystem4.Web.Services.LeaveAllocations;
 
-public class LeaveAllocationsService(ApplicationDbContext _context, IHttpContextAccessor _httpContextAccessor, UserManager<ApplicationUser> _userManager, IMapper _mapper) : ILeaveAllocationsService
+public class LeaveAllocationsService(ApplicationDbContext _context, IUserService _userService, IMapper _mapper, IPeriodsService _periodsService) 
+    : ILeaveAllocationsService
 {
     public async Task AllocateLeave(string employeeId)
     {
@@ -17,18 +14,9 @@ public class LeaveAllocationsService(ApplicationDbContext _context, IHttpContext
             .ToListAsync();
 
         // get the current period based on the year
-        var currentDate = DateTime.Now;
-
-        var period = await _context.Periods
-            .SingleOrDefaultAsync(p => p.EndDate.Year == currentDate.Year);
-
-        if (period == null)
-        {
-            throw new InvalidOperationException($"No leave period found for year {currentDate.Year}.");
-        }
-
-        var monthsRemaining = period.EndDate.Month - currentDate.Month;
-
+        var period = await _periodsService.GetCurrentPeriod();
+        
+        var monthsRemaining = period.EndDate.Month - DateTime.Now.Month;
 
         // foreach leave type, create an allocation entry
         foreach (var leaveType in leaveTypes)
@@ -57,8 +45,8 @@ public class LeaveAllocationsService(ApplicationDbContext _context, IHttpContext
     public async Task<EmployeeAllocationVM> GetEmployeeAllocations(string? userId)
     {
         var user = string.IsNullOrEmpty(userId)
-            ? await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User)
-            : await _userManager.FindByIdAsync(userId);
+            ? await _userService.GetLoggedInUser()
+            : await _userService.GetUserById(userId);
 
         var allocations = await GetAllocations(user.Id);
         var allocationVmList = _mapper.Map<List<LeaveAllocation>, List<LeaveAllocationVM>>(allocations);
@@ -80,7 +68,7 @@ public class LeaveAllocationsService(ApplicationDbContext _context, IHttpContext
 
     public async Task<List<EmployeeListVM>> GetEmployees()
     {
-        var users = await _userManager.GetUsersInRoleAsync(Roles.Employee);
+        var users = await _userService.GetEmployee();
         var employees = _mapper.Map<List<ApplicationUser>, List<EmployeeListVM>>(users.ToList());
 
         return employees;
@@ -115,20 +103,24 @@ public class LeaveAllocationsService(ApplicationDbContext _context, IHttpContext
             .ExecuteUpdateAsync(s => s.SetProperty(e => e.Days, allocationEditVm.Days));
     }
 
+    public async Task<LeaveAllocation> GetCurrentAllocation(int leaveTypeId, string employeeId)
+    {
+        
+        var period = await _periodsService.GetCurrentPeriod();
+        var allocation = await _context.LeaveAllocations
+            .FirstAsync(x => x.EmployeeId == employeeId
+                                      && x.LeaveTypeId == leaveTypeId
+                                      && x.PeriodId == period.Id);
+        return allocation;
+    }
+
     private async Task<List<LeaveAllocation>> GetAllocations(string? userId)
     {
-        var currentDate = DateTime.Now;
-        //var period = await _context.Periods.SingleAsync(q => q.EndDate.Year == currentDate.Year);
-        //var leaveAllocations = await _context.LeaveAllocations
-        //    .Include(q => q.LeaveType)
-        //    .Include(q => q.Period)
-        //    .Where(q => q.EmployeeId == user.Id && q.PeriodId == period.Id)
-        //    .ToListAsync();
-
+        var period = await _periodsService.GetCurrentPeriod();
         var leaveAllocations = await _context.LeaveAllocations
-           .Include(q => q.LeaveType)
-           .Include(q => q.Period)
-           .Where(q => q.EmployeeId == userId && q.Period.EndDate.Year == currentDate.Year)
+           .Include(x => x.LeaveType)
+           .Include(x => x.Period)
+           .Where(x => x.EmployeeId == userId && x.Period.Id == period.Id)
            .ToListAsync();
         return leaveAllocations;
     }

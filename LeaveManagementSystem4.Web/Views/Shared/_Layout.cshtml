@@ -47,6 +47,9 @@
                                     <li>
                                         <a class="dropdown-item text-dark" asp-controller="LeaveAllocation" asp-action="Index">View Employee</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item text-dark" asp-controller="leaveRequests" asp-action="ListRequests">View Requests</a>
+                                    </li>
                                 </ul>
                             </li>
                         }
@@ -75,6 +78,8 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
+   <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
