@@ -1,33 +1,30 @@
-using LeaveManagementSystem4.Web.Services.LeaveAllocations;
-using LeaveManagementSystem4.Web.Services.Email;
-using LeaveManagementSystem4.Web.Services.LeaveRequests;
-using LeaveManagementSystem4.Web.Services.Users;
+using LeaveManagementSystem4.Application;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+DataServiceRegistration.AddDataServices(builder.Services, builder.Configuration);
+ApplicationServicesRegistration.AddApplicationServices(builder.Services);
 
-builder.Services.AddScoped<ILeaveTypesService, LeaveTypesService>();
-builder.Services.AddScoped<ILeaveAllocationsService, LeaveAllocationsService>();
-builder.Services.AddScoped<ILeaveRequestsService, LeaveRequestsService>(); // Assuming ILeaveRequestsService is defined in LeaveManagementSystem4.Web.Services.LeaveRequests namespace
-builder.Services.AddScoped<IPeriodsService, PeriodsService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Host.UseSerilog((ctx, config) =>
+
+    config.WriteTo.Console()
+    .ReadFrom.Configuration(ctx.Configuration)
+
+);
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminSupervisorOnly", policy => {
-    policy.RequireRole(Roles.Administrator, Roles.Supervisor);
+    options.AddPolicy("AdminSupervisorOnly", policy =>
+    {
+        policy.RequireRole(Roles.Administrator, Roles.Supervisor);
     });
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()

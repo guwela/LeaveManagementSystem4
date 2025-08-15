@@ -1,19 +1,13 @@
-﻿using LeaveManagementSystem4.Web.Models.LeaveTypes;
-using LeaveManagementSystem4.Web.Services.LeaveTypes;
-using Microsoft.AspNetCore.Authorization;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace LeaveManagementSystem4.Web.Controllers
+﻿namespace LeaveManagementSystem4.Web.Controllers
 {
-   [Authorize(Roles = "Administrator")]// Ensure that only users with the Administrator role can access this controller
+    [Authorize(Roles = Roles.Administrator)]// Ensure that only users with the Administrator role can access this controller
     public class LeaveTypesController(ILeaveTypesService _leaveTypeService) : Controller
     {
 
 
 
         // GET: LeaveTypes
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index()
         {
             // This method retrieves all leave types and returns them to the view.
             var viewData = await _leaveTypeService.GetAll();

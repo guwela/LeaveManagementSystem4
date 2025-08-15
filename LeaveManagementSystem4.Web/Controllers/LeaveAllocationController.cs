@@ -1,7 +1,4 @@
-﻿using LeaveManagementSystem4.Web.Models.LeaveAllocations;
-using LeaveManagementSystem4.Web.Services.LeaveAllocations;
-
-namespace LeaveManagementSystem4.Web.Controllers
+﻿namespace LeaveManagementSystem4.Web.Controllers
 {
     [Authorize]
     public class LeaveAllocationController(ILeaveAllocationsService _leaveAllocationsService, ILeaveTypesService _leaveTypesService) : Controller

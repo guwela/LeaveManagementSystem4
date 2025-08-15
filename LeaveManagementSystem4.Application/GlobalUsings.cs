@@ -1,0 +1,17 @@
+﻿global using LeaveManagementSystem4.Common.Static;
+global using LeaveManagementSystem4.Data;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.UI.Services;
+global using Microsoft.EntityFrameworkCore;
+global using System.ComponentModel.DataAnnotations;
+global using System.Net.Mail;
+global using LeaveManagementSystem4.Application.Services.Email;
+global using LeaveManagementSystem4.Application.Services.Users;
+global using LeaveManagementSystem4.Application.Models.LeaveAllocations;
+global using LeaveManagementSystem4.Application.Services.LeaveAllocations;
+global using LeaveManagementSystem4.Application.Services.Periods;
+global using LeaveManagementSystem4.Application.Services.LeaveTypes;
+global using LeaveManagementSystem4.Application.Models.LeaveTypes;
+global using LeaveManagementSystem4.Application.Models.Periods;
+global using LeaveManagementSystem4.Application.Services.LeaveRequests;
+global using LeaveManagementSystem4.Application.Models.LeaveRequests;
