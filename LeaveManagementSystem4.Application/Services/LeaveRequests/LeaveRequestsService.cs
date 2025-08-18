@@ -28,7 +28,7 @@ public partial class LeaveRequestsService(IMapper _mapper,
             LeaveRequestStatus = (LeaveRequestStatusEnum)x.LeaveRequstStatusId // Convert status ID to enum
         }).ToList();
 
-        var model = new EmployeeLeaveRequestListVM
+        var model = new EmployeeLeaveRequestListVM // Create a new instance of EmployeeLeaveRequestListVM
         {
             TotalRequests = leaveRequests.Count,
             ApprovedRequests = approvedRequestsCount,
@@ -42,8 +42,8 @@ public partial class LeaveRequestsService(IMapper _mapper,
 
     public async Task CancelLeaveRequest(int leaveRequestId)
     {
-        var leaveRequest = await _context.LeaveRequests.FindAsync(leaveRequestId);
-        leaveRequest.LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Cancelled;
+        var leaveRequest = await _context.LeaveRequests.FindAsync(leaveRequestId); // Find the leave request by ID
+        leaveRequest.LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Cancelled;  // Set the status to Cancelled
 
 
         await UpdateAllocationDays(leaveRequest, false); // Restore the allocation days
@@ -69,7 +69,8 @@ public partial class LeaveRequestsService(IMapper _mapper,
     {
         throw new NotImplementedException();
     }
-    public async Task<bool> RequestDatesExceedAllocation(LeaveRequestCreateVM model)
+    // Check if the requested leave dates exceed the available allocation
+    public async Task<bool> RequestDatesExceedAllocation(LeaveRequestCreateVM model) 
     {
         var user = await _userService.GetLoggedInUser(); // Get the current user
 
@@ -85,10 +86,10 @@ public partial class LeaveRequestsService(IMapper _mapper,
         return allocation.Days < numberOfDays; // Check if the allocation is sufficient
     }
 
-    public async Task ReviewLeaveRequest(int leaveRequestId, bool approved)
+    public async Task ReviewLeaveRequest(int leaveRequestId, bool approved) // Review a leave request by ID
     {
         var user = await _userService.GetLoggedInUser(); // Get the current user
-        var leaveRequest = await _context.LeaveRequests.FindAsync(leaveRequestId);
+        var leaveRequest = await _context.LeaveRequests.FindAsync(leaveRequestId);  // Find the leave request by ID
         leaveRequest.LeaveRequstStatusId = approved
             ? (int)LeaveRequestStatusEnum.Approved
             : (int)LeaveRequestStatusEnum.Rejected;
@@ -126,8 +127,8 @@ public partial class LeaveRequestsService(IMapper _mapper,
 
         return model;
     }
-
-    public async Task<ReviewLeaveRequestVM> ReviewLeaveRequstForReview(int id)
+    // Review a leave request for review by ID
+    public async Task<ReviewLeaveRequestVM> ReviewLeaveRequstForReview(int id) 
     {
         var leaveRequst = await _context.LeaveRequests
             .Include(x => x.LeaveType) // Include the LeaveType for each request
@@ -159,6 +160,7 @@ public partial class LeaveRequestsService(IMapper _mapper,
 
     private async Task UpdateAllocationDays(LeaveRequest leaveRequest, bool deductDays)
     {
+        // Update the allocation days based on the leave request
         var allocation = await _leaveAllocationsService.GetCurrentAllocation(leaveRequest.LeaveTypeId, leaveRequest.EmployeeId);
         var numberOfDays = CalculateDays(leaveRequest.StartDate, leaveRequest.EndDate);
 
@@ -170,12 +172,12 @@ public partial class LeaveRequestsService(IMapper _mapper,
         {
             allocation.Days += numberOfDays;
         }
-        _context.Entry(allocation).State = EntityState.Modified;
+        _context.Entry(allocation).State = EntityState.Modified; // Mark the allocation as modified
     }
 
-    private int CalculateDays(DateTime start, DateTime end)
+    private int CalculateDays(DateTime start, DateTime end) // Calculate the number of days between two dates
     {
-        return (end - start).Days;
+        return (end - start).Days; 
     }
 }
 

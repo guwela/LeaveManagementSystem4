@@ -1,92 +1,100 @@
 ﻿@model ReviewLeaveRequestVM
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+
 @{
-    ViewData["Title"] = "Review Leave Request"; // This is the title that will be displayed in the browser tab
+    ViewData["Title"] = "Review Leave Request";
 }
 
-<h1>Review Leave Request</h1>
+<div class="container mt-4">
 
-<div class="alert alert-info" role="alert">
-    <h4 class="alert-heading">Requesting Employee</h4>
-    <hr>
-    <p>
-        <strong>Name:</strong> @Model.Employee.FirstName @Model.Employee.LastName
-        <strong>Contact Details:</strong> @Model.Employee.Email
-    </p>
-    <hr />
+    <h2 class="mb-4">Review Leave Request</h2>
+
+    <!-- Employee Info -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Requesting Employee</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.Employee.FirstName @Model.Employee.LastName</p>
+            <p><strong>Email:</strong> @Model.Employee.Email</p>
+        </div>
+    </div>
+
+    <!-- Leave Request Details -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Leave Request Details</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LeaveType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.LeaveType)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StartDate)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StartDate)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.EndDate)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.EndDate)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RequestComments)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RequestComments)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-start gap-2 mb-4">
+        <button type="button" class="btn btn-success btn-lg approvalBtn" data-id="@Model.Id" data-approved="true">
+            ✅ Approve
+        </button>
+        <button type="button" class="btn btn-danger btn-lg approvalBtn" data-id="@Model.Id" data-approved="false">
+            ❌ Reject
+        </button>
+        <a class="btn btn-info btn-lg" asp-action="ListRequests"> 
+            🔙 Back To List
+        </a>
+    </div>
+
 </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LeaveType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LeaveType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RequestComments)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RequestComments)
-        </dd>
-    </dl>
-</div>
-
-<div class="row">
-    <div class="col">
-        <button class="btn btn-outline-success approvalBtn" data-id="@Model.Id" data-approved="true">Approve</button>
-    </div>
-    <div class="col">
-        <button class="btn btn-outline-danger approvalBtn" data-id="@Model.Id" data-approved="false">Reject</button>
-    </div>
-    <div class="col">
-        <a class="btn btn-outline-primary" asp-action="ListRequests">Back To List</a>
-    </div>
-</div>
-
-<form asp-action="Review" id="approvalForm">
-    <input type="hidden" name="id" id="leaveRequestId"/>
+<!-- Hidden form -->
+<form asp-action="Review" id="approvalForm" method="post">
+    <input type="hidden" name="id" id="leaveRequestId" />
     <input type="hidden" name="approved" id="approved" />
 </form>
 
-@section Scripts{
-    <script>
-        $(function (e) {
-            $('.approvalBtn').click(function (e) {
-                // e.preventDefault();
-                swal({
-                    title: "Are you sure?",
-                    text: "You are about to approve a leave",
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".approvalBtn").forEach(function (button) {
+            button.addEventListener("click", function () {
+                let id = this.getAttribute("data-id");
+                let approved = this.getAttribute("data-approved") === "true";
+
+                Swal.fire({
+                    title: approved ? "Approve Leave?" : "Reject Leave?",
+                    text: approved ? 
+                          "Do you want to approve this leave request?" : 
+                          "Do you want to reject this leave request?",
                     icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((confirm) => {
-                    if (confirm) {
-                        var btn = $(this);  
-                        var id = btn.data("id");
-                        var approved = btn.data("approved");
-                        $('#leaveRequestId').val(id);
-                        $('#approved').val(approved);
-                        $('#approvalForm').submit();
+                    showCancelButton: true,
+                    confirmButtonColor: approved ? "#28a745" : "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: approved ? "Yes, Approve" : "Yes, Reject",
+                    cancelButtonText: "No"
+                }).then((result) => {
+                    if (result.isConfirmed) {   // ✅ Only runs if confirmed
+                        // ✅ Set values into hidden form
+                        document.getElementById("leaveRequestId").value = id;
+                        document.getElementById("approved").value = approved;
+
+                        // ✅ Submit hidden form
+                        document.getElementById("approvalForm").submit();
                     }
-                }); 
+                });
             });
         });
-    </script>
-}
+    });
+</script>
+

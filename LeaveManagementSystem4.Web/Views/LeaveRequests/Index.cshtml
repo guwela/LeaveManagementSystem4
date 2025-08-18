@@ -1,111 +1,133 @@
-﻿@using LeaveManagementSystem4.Application.Models;
-@using LeaveManagementSystem4.Application.Services.LeaveRequests;
-@model IEnumerable<LeaveRequestReadOnlyVM> 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using LeaveManagementSystem4.Application.Models
+@using LeaveManagementSystem4.Application.Services.LeaveRequests
+@model IEnumerable<LeaveRequestReadOnlyVM>
+
 @{
-    ViewData["Title"] = "Leave Request List"; // This is the title that will be displayed in the browser tab
+    ViewData["Title"] = "Leave Request List";
 }
-<h1>Leave Management System</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary">Request Leave</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LeaveType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfDays)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LeaveRequestStatus)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            var className = string.Empty;
-            if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Approved)
-            {
-                className = "success";
-            }
-            else if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)
-            {
-                className = "warning";
-            }
-            else if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Rejected)
-            {
-                className = "danger";
-            }
-            else if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Cancelled)
-            {
-                className = "dark";
-            }
-            
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LeaveType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberOfDays)
-                </td>
-                <td>
-                    <span class="badge rounded-pill bg-@className">@item.LeaveRequestStatus.ToString()</span>
-                </td>
-                <td>
-                    @if(item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Leave Management System</h2>
+        <a asp-action="Create" class="btn btn-outline-info">
+            <i class="bi bi-plus-circle"></i> Request Leave
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.LeaveType)</th>
+                        <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.NumberOfDays)</th>
+                        <th>@Html.DisplayNameFor(model => model.LeaveRequestStatus)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                       <button data-id="@item.Id" class="btn btn-danger cancelBtn">Cancel</button>
-                    }
-                    </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        var className = item.LeaveRequestStatus switch
+                        {
+                            LeaveRequestStatusEnum.Approved => "success",
+                            LeaveRequestStatusEnum.Pending => "warning",
+                            LeaveRequestStatusEnum.Rejected => "danger",
+                            LeaveRequestStatusEnum.Cancelled => "dark",
+                            _ => "secondary"
+                        };
 
-<form id="cancelForm" asp-action="Cancel">
-    <input type="hidden" name="id" id="LeaveRequestId" />
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.LeaveType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.NumberOfDays)</td>
+                            <td>
+                                <span class="badge rounded-pill bg-@className">
+                                    @item.LeaveRequestStatus
+                                </span>
+                            </td>
+                            <td>
+                                @if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)
+                                {
+                                    @* <form asp-action="Cancel">
+                                        <input type="hidden" asp-for="@item.Id" name="id" />
+                                        <input class="btn btn-outline-danger" type="submit" value="Cancel" />
+                                        
+                                    </form> *@
+
+                                    <form asp-action="Cancel" method="post" class="cancel-form">
+                                        <input type="hidden" asp-for="@item.Id" name="id" />
+                                        <button type="button" class="btn btn-outline-danger cancel-btn">Cancel</button>
+                                    </form>
+
+
+                                    @* <button data-id="@item.Id" class="btn btn-outline-danger" classBtn>Cancel</button> *@
+                                 }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+     
+    
+</div>
+@* <form id="cancelForm" asp-action="Cancel">
+    <input type="hidden" name="id" id="leaveRequestId" />
 </form>
 
-@section Scripts{
+ @section Scripts {
     <script>
         $(function () {
-           $('.cancelBtn').click(function (e) {
-               e.preventDefault();
-               swal({
-                   title: "Are you sure?",
-                   text: "You will not be able to recover this request!",
-                   icon: "warning",
-                   buttons: true,
-                   dangerMode: true,
-               }).then((confirm) => {
-                   if (confirm) {
-                       var btn = $(this);
-                            var id = btn.data("id");
-                            $('#LeaveRequestId').val(id);
-                            $('#cancelForm').submit();
-                       }
-                   });
-               }
-           );
+            $('.cancelBtn').click( 
+            function (e) {
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this request!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                }).then((confirm) => {
+                    if (confirm) {
+                        var btn = $(this);
+                        var id = btn.data("id");
+                        $('#leaveRequestId').val(id);
+                        $('#cancelForm').submit();
+                    }
+                });
+            });
         });
     </script>
-}
+}  *@
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Attach click event to all cancel buttons
+        document.querySelectorAll(".cancel-btn").forEach(function (button) {
+            button.addEventListener("click", function () {
+                let form = this.closest("form"); // find the parent form
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to cancel this leave request?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, cancel it!",
+                    cancelButtonText: "No, keep it"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // submit the form if confirmed
+                    }
+                });
+            });
+        });
+    });
+</script>

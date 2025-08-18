@@ -1,6 +1,55 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <p>
+        This Privacy Policy explains how our Leave Management System (“the System”) collects, uses, and protects your personal information.
+        By using this system, you agree to the terms outlined in this policy.
+    </p>
+
+    <h4 class="mt-4">1. Information We Collect</h4>
+    <ul>
+        <li>Personal identification details such as your name, employee ID, department, and contact information.</li>
+        <li>Employment-related data including job title, leave balances, and approval history.</li>
+        <li>Login and authentication information to secure your account.</li>
+    </ul>
+
+    <h4 class="mt-4">2. How We Use Your Information</h4>
+    <p>We use the collected data to:</p>
+    <ul>
+        <li>Process and track leave requests.</li>
+        <li>Provide managers and HR with accurate leave and attendance records.</li>
+        <li>Improve system functionality and user experience.</li>
+    </ul>
+
+    <h4 class="mt-4">3. Data Protection</h4>
+    <p>
+        We implement strict access controls, encryption, and secure hosting to protect your personal data.
+        Only authorized personnel have access to sensitive information.
+    </p>
+
+    <h4 class="mt-4">4. Sharing of Information</h4>
+    <p>
+        Your information will not be sold or shared with third parties, except when required by law or necessary
+        to comply with company policy.
+    </p>
+
+    <h4 class="mt-4">5. Your Rights</h4>
+    <p>
+        You may request access to your personal information, correct inaccuracies, or request deletion of your
+        data in accordance with applicable laws.
+    </p>
+
+    <h4 class="mt-4">6. Changes to This Policy</h4>
+    <p>
+        This Privacy Policy may be updated periodically. We will notify you of any significant changes by
+        updating the date and publishing the revised policy on this page.
+    </p>
+
+    <p class="mt-4 text-muted">
+        Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")
+    </p>
+</div>

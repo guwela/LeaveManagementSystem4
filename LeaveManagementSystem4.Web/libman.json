@@ -3,12 +3,16 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
+      "library": "jqueryui@1.14.1",
+      "destination": "wwwroot/lib/jqueryui/"
+    },
+    {
       "library": "sweetalert@2.1.2",
       "destination": "wwwroot/lib/sweetalert/"
     },
     {
-      "library": "jqueryui@1.14.1",
-      "destination": "wwwroot/lib/jqueryui/"
+      "library": "sweetalert2@11.22.4",
+      "destination": "wwwroot/lib/sweetalert2/"
     }
   ]
 }

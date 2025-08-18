@@ -1,0 +1,205 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Leave Management System4</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="~/images/leave2.png" />
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="~/css/styles.min.css" />
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LeaveManagementSystem4.Web.styles.css" asp-append-version="true" />
+
+    <!-- Bootstrap (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+
+        <!-- Topstrip -->
+        <div class="app-topstrip bg-info py-3 px-4 w-100 d-lg-flex align-items-center justify-content-between">
+            <div class="d-lg-flex align-items-center gap-3">
+                <h3 class="text-linear-gradient mb-3 mb-lg-0 fs-3 text-uppercase text-center fw-semibold">
+                    Leave Management System
+                </h3>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="left-sidebar">
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./index.html" class="text-nowrap logo-img">
+                        <img src="~/images/flight.png" alt="Logo" width="70" height="70" />
+                    </a>
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <!-- Home Section -->
+                        <li class="nav-small-cap text-uppercase fw-bold text-muted">
+                            <i class="bi bi-house-door-fill me-2"></i>Home
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link primary-hover-bg" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-fill me-2"></i>Home
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link primary-hover-bg" asp-controller="Home" asp-action="Privacy">
+                                <i class="bi bi-shield-lock-fill me-2"></i>Privacy
+                            </a>
+                        </li>
+
+                        @* Administrator Management Section *@
+                        @if (User.IsInRole(Roles.Administrator))
+                        {
+                            <li class="nav-small-cap text-uppercase fw-bold text-muted mt-3">
+                                <i class="bi bi-gear-fill me-2"></i>Management
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveTypes" asp-action="Index">
+                                    <i class="bi bi-list-check me-2"></i>Leave Types
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="Periods" asp-action="Index">
+                                    <i class="bi bi-calendar-event-fill me-2"></i>Leave Periods
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveAllocation" asp-action="Index">
+                                    <i class="bi bi-people-fill me-2"></i>View Employee
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="leaveRequests" asp-action="ListRequests">
+                                    <i class="bi bi-file-earmark-text-fill me-2"></i>View Request
+                                </a>
+                            </li>
+                        }
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveAllocation" asp-action="Details">
+                                    <i class="bi bi-file-text-fill me-2"></i>View Leave Allocation
+                                </a>
+                            </li>
+                        }
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-small-cap text-uppercase fw-bold text-muted mt-3">
+                                <i class="bi bi-person-circle me-2"></i>Auth
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-area="Identity" asp-page="/Account/Login">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-area="Identity" asp-page="/Account/Register">
+                                    <i class="bi bi-person-plus-fill me-2"></i>Register
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="body-wrapper">
+            <div class="body-wrapper-inner">
+                <div class="container-fluid">
+                    <!-- Header -->
+                    <header class="app-header bg-info">
+                        <nav class="navbar navbar-expand-lg navbar-light">
+                            <ul class="navbar-nav">
+                                <li class="nav-item d-block d-xl-none">
+                                    <a class="nav-link sidebartoggler" id="headerCollapse" href="javascript:void(0)">
+                                        <i class="ti ti-menu-2"></i>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                                    <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="drop2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <img src="~/images/user.svg" alt="User" width="35" height="35" class="rounded-circle" />
+                                                Hello @User.Identity.Name!
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drop2">
+                                                <li>
+                                                    <a asp-area="Identity" asp-page="/Account/Manage/Index"
+                                                       class="dropdown-item d-flex align-items-center gap-2">
+                                                        <i class="bi bi-person-fill fs-6"></i> My Account
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form class="px-3 py-2" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                                                        <button type="submit" class="btn btn-outline-info w-100">Logout</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                        </nav>
+                    </header>
+
+                    <!-- Content -->
+                    <div class="card">
+                        <div class="card-body">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="~/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sidebarmenu.js"></script>
+    <script src="~/js/app.min.js"></script>
+    <script src="~/lib/simplebar/dist/simplebar.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Section Scripts -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

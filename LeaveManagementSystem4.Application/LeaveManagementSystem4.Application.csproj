@@ -11,7 +11,9 @@
 	</ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\LeaveManagementSystem4.Common\LeaveManagementSystem4.Common.csproj" />
     <ProjectReference Include="..\LeaveManagementSystem4.Data\LeaveManagementSystem4.Data.csproj" />
+	  
   </ItemGroup>
 
 </Project>

@@ -1,30 +1,28 @@
 ﻿@model LeaveTypeReadOnlyVM
 
 @{
-    ViewData["Title"] = "Details Leave Type";
+    ViewData["Title"] = "Leave Type Details";
 }
 
-<h1>Leave Type Details for @Model.Name</h1>
+<div class="container mt-4">
 
-<div>
-   
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfDay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfDay)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-sm">Edit</a> |
-    <a asp-action="Index" class="btn btn-primary btn-sm">Back to List</a>
+    <h2 class="mb-4">Leave Type Details: @Model.Name</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.NumberOfDay)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.NumberOfDay)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+
 </div>
