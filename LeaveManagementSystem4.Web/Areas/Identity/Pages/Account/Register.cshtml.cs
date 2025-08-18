@@ -109,7 +109,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
 
             // [Required]
             public string RoleName { get; set; }
-            public string[] RoleNames { get; set; }
+            public string[] RoleNames { get; set; } = Array.Empty<string>();
 
         }
 
@@ -195,12 +195,13 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
-            //var roles = await _roleManager.Roles
-            //   .Select(n => n.Name)
-            //   .Where(n => n != "Administrator")
-            //   .ToArrayAsync();
-            //RoleNames = roles;
+            // Repopulate RoleNames so the dropdown/list works if ModelState is invalid
+            var roles = await _roleManager.Roles
+                .Select(n => n.Name)
+                .Where(n => n != "Administrator")
+                .ToArrayAsync();
+            Input.RoleNames = roles;
+
             return Page();
         }
 
