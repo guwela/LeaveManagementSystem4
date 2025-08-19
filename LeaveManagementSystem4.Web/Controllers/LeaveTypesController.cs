@@ -32,6 +32,20 @@
             return View(leaveType);
         }
 
+        [HttpGet]
+        public IActionResult CreateModal()
+        {// Initialize a new instance of the view model for creating a leave type
+            var vm = new LeaveTypeCreateVM(); 
+            // This returns a partial view for creating a new leave type
+            return PartialView("_CreateForm", vm); 
+        }
+        // Check if the request is an AJAX request
+        private bool IsAjaxRequest()
+        {
+            return Request.Headers["X-Requested-With"] == "XMLHttpRequest"; 
+        }
+
+
         // GET: LeaveTypes/Create
         public IActionResult Create()
         {
@@ -45,20 +59,28 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(LeaveTypeCreateVM leaveTypeCreate)
         {
-            // adding custom validation and model state error
             if (await _leaveTypeService.CheckIfLeaveTypeNameExists(leaveTypeCreate.Name))
             {
                 ModelState.AddModelError("Name", "Leave type with this name already exists.");
             }
-            // ModelState.AddModelError("Name", "This is a custom error message for Name field.");
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
             {
-                // Map the view model to the data model
-                await _leaveTypeService.Create(leaveTypeCreate);
-                return RedirectToAction(nameof(Index));
+                if (IsAjaxRequest())
+                    return PartialView("_CreateForm", leaveTypeCreate); // re-render errors in modal
+                return View(leaveTypeCreate);
             }
-            return View(leaveTypeCreate);
+
+            await _leaveTypeService.Create(leaveTypeCreate);
+
+            if (IsAjaxRequest())
+            {
+                return Json(new { ok = true }); // return a JSON response indicating success
+            }
+
+            return RedirectToAction(nameof(Index)); // redirect to the index action after successful creation
         }
+
 
         // GET: LeaveTypes/Edit/5
         public async Task<IActionResult> Edit(int? id)

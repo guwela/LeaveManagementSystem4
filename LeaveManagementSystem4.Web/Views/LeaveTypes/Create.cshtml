@@ -1,11 +1,9 @@
 ﻿@model LeaveTypeCreateVM
-
 @{
     ViewData["Title"] = "Create Leave Type";
 }
 
 <div class="container mt-4">
-
     <div class="mb-4">
         <h2>Create Leave Type</h2>
         <hr />
@@ -13,32 +11,12 @@
 
     <div class="row">
         <div class="col-md-6 col-lg-4">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <!-- Leave Type Name -->
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label"></label>
-                    <input asp-for="Name" class="form-control" placeholder="Enter leave type name" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-
-                <!-- Number of Days -->
-                <div class="mb-3">
-                    <label asp-for="NumberOfDay" class="form-label"></label>
-                    <input asp-for="NumberOfDay" class="form-control" placeholder="Enter number of days" />
-                    <span asp-validation-for="NumberOfDay" class="text-danger"></span>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="d-flex gap-2">
-                    <input type="submit" value="Create" class="btn btn-success" />
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-                </div>
-            </form>
+            @await Html.PartialAsync("_CreateForm", Model)
+            <div class="mt-2">
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+            </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
