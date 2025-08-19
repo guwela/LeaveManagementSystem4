@@ -2,7 +2,8 @@
 
 namespace LeaveManagementSystem4.Application.Services.Users
 {
-    public class UserService(UserManager<ApplicationUser> userManager, IHttpContextAccessor _httpContextAccessor) : IUserService
+    public class UserService(UserManager<ApplicationUser> userManager, IHttpContextAccessor 
+        _httpContextAccessor) : IUserService
     {
         public async Task<ApplicationUser> GetLoggedInUser()
         {

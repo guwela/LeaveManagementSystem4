@@ -4,7 +4,8 @@ namespace LeaveManagementSystem4.Web.Controllers;
 
 [Authorize]
 
-public class LeaveRequestsController(ILeaveTypesService _leaveTypesService, ILeaveRequestsService _leaveRequestsService) : Controller
+public class LeaveRequestsController(ILeaveTypesService _leaveTypesService, ILeaveRequestsService _leaveRequestsService) :
+    Controller
 {
     // GET: LeaveRequests
     public async Task<IActionResult> Index()

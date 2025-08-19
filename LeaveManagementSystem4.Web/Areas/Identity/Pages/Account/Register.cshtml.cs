@@ -195,7 +195,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
                 }
             }
 
-            // Repopulate RoleNames so the dropdown/list works if ModelState is invalid
+            // Repopulate RoleNames so the dropdown/list works if ModelState is invalid 
             var roles = await _roleManager.Roles
                 .Select(n => n.Name)
                 .Where(n => n != "Administrator")
@@ -225,7 +225,7 @@ namespace LeaveManagementSystem4.Web.Areas.Identity.Pages.Account
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore; 
         }
     }
 }
