@@ -6,5 +6,12 @@
 
         [Display(Name = "Request Comments")]
         public string RequestComments { get; set; }
+
+        [Display(Name = "Leave Type")]
+        public int? DocumentId { get; set; } // nullable if no document
+
+        [Display(Name = "Document Name")]
+        public string? DocumentName { get; set; }
+
     }
 }

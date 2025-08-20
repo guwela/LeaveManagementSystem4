@@ -20,6 +20,7 @@
     </div>
 
     <!-- Leave Request Details -->
+    <!-- Leave Request Details -->
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-light">
             <h5 class="mb-0">Leave Request Details</h5>
@@ -37,9 +38,27 @@
 
                 <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RequestComments)</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.RequestComments)</dd>
+
+                @* New: Document download link *@
+                @if (Model.DocumentId != null)
+                {
+                    <dt class="col-sm-3">Document</dt>
+                    <dd class="col-sm-9">
+                        <a asp-action="DownloadDocument" asp-route-id="@Model.DocumentId">
+                            @Model.DocumentName
+                        </a>
+                    </dd>
+                }
+                else
+                {
+                    <dt class="col-sm-3">Document</dt>
+                    <dd class="col-sm-9">No document uploaded</dd>
+                }
+
             </dl>
         </div>
     </div>
+
 
     <!-- Action Buttons -->
     <div class="d-flex justify-content-start gap-2 mb-4">

@@ -56,39 +56,39 @@ public partial class LeaveRequestsService(IMapper _mapper,
     }
 
     public async Task CreateLeaveRequest(LeaveRequestCreateVM model)
-    {
-        var user = await _userService.GetLoggedInUser(); // Get the logged-in user
+{
+    var user = await _userService.GetLoggedInUser(); // Get the logged-in user
 
-        var leaveRequest = new LeaveRequest
+    var leaveRequest = new LeaveRequest
+    {
+        StartDate = model.StartDate,
+        EndDate = model.EndDate,
+        LeaveTypeId = model.LeaveTypeId,
+        RequestComments = model.RequestComments,
+        EmployeeId = user.Id, // Set the EmployeeId here!
+        LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Pending // Optional: set default status
+    };
+
+    _context.LeaveRequests.Add(leaveRequest);
+    await _context.SaveChangesAsync();
+
+    if (model.Document != null && model.Document.Length > 0)
+    {
+        using var ms = new MemoryStream();
+        await model.Document.CopyToAsync(ms);
+
+        var doc = new LeaveRequestDocument
         {
-            StartDate = model.StartDate,
-            EndDate = model.EndDate,
-            LeaveTypeId = model.LeaveTypeId,
-            RequestComments = model.RequestComments,
-            EmployeeId = user.Id, // Set the EmployeeId here!
-            LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Pending // Optional: set default status
+            LeaveRequestId = leaveRequest.Id,
+            DocumentName = model.Document.FileName,
+            ContentType = model.Document.ContentType,
+            FileContent = ms.ToArray()
         };
 
-        _context.LeaveRequests.Add(leaveRequest);
+        _context.LeaveRequestDocuments.Add(doc);
         await _context.SaveChangesAsync();
-
-        if (model.Document != null && model.Document.Length > 0)
-        {
-            using var ms = new MemoryStream();
-            await model.Document.CopyToAsync(ms);
-
-            var doc = new LeaveRequestDocument
-            {
-                LeaveRequestId = leaveRequest.Id,
-                DocumentName = model.Document.FileName,
-                ContentType = model.Document.ContentType,
-                FileContent = ms.ToArray()
-            };
-
-            _context.LeaveRequestDocuments.Add(doc);
-            await _context.SaveChangesAsync();
-        }
     }
+}
 
 
     public async Task<LeaveRequestDocument?> GetDocumentById(int id)
@@ -168,7 +168,15 @@ public partial class LeaveRequestsService(IMapper _mapper,
             .Include(x => x.LeaveType)
             .FirstOrDefaultAsync(x => x.Id == id);
 
+        if (leaveRequst == null)
+            throw new Exception("Leave request not found");
+
         var user = await _userService.GetUserById(leaveRequst.EmployeeId);
+
+        // Step: Get the document
+        var document = await _context.LeaveRequestDocuments
+            .Where(d => d.LeaveRequestId == leaveRequst.Id)
+            .FirstOrDefaultAsync();
 
         var model = new ReviewLeaveRequestVM
         {
@@ -185,10 +193,14 @@ public partial class LeaveRequestsService(IMapper _mapper,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName
-            }
+            },
+            DocumentId = document?.Id,              // Add this
+            DocumentName = document?.DocumentName   // Add this
         };
         return model;
     }
+
+
 
     private async Task UpdateAllocationDays(LeaveRequest leaveRequest, bool deductDays)
     {

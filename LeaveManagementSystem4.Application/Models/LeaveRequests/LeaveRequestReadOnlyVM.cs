@@ -22,5 +22,8 @@
         // Add this property for the uploaded document
         [Display(Name = "Document ID")]
         public int? DocumentId { get; set; }
+
+        
+
     }
 }

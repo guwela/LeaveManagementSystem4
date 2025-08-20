@@ -85,9 +85,10 @@ namespace LeaveManagementSystem4.Web.Controllers
 
         public async Task<IActionResult> Review(int id)
         {
-            var model = await _leaveRequestsService.ReviewLeaveRequstForReview(id);
+            var model = await _leaveRequestsService.ReviewLeaveRequstForReview(id); 
             return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
