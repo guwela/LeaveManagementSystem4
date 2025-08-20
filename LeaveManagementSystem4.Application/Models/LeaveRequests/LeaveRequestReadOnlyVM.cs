@@ -18,5 +18,9 @@
 
         [Display(Name = "Leave Status")]
         public LeaveRequestStatusEnum LeaveRequestStatus { get; set; } // Status of the leave request (e.g., Pending, Approved, Rejected)
+
+        // Add this property for the uploaded document
+        [Display(Name = "Document ID")]
+        public int? DocumentId { get; set; }
     }
 }

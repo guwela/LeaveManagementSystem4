@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LeaveManagementSystem4.Application.Models.LeaveRequests
 {
@@ -21,6 +22,10 @@ namespace LeaveManagementSystem4.Application.Models.LeaveRequests
         public string? RequestComments { get; set; } // Comment from the employee requesting leave
 
         public SelectList? LeaveTypes { get; set; } = default!; // SelectList for Leave Types
+
+        // NEW: File upload
+        [Display(Name = "Upload Document")]
+        public IFormFile Document { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

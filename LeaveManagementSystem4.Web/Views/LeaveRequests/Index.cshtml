@@ -24,6 +24,7 @@
                         <th>@Html.DisplayNameFor(model => model.EndDate)</th>
                         <th>@Html.DisplayNameFor(model => model.NumberOfDays)</th>
                         <th>@Html.DisplayNameFor(model => model.LeaveRequestStatus)</th>
+                        <th>Document</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -48,6 +49,12 @@
                                 <span class="badge rounded-pill bg-@className">
                                     @item.LeaveRequestStatus
                                 </span>
+                            </td>
+                            <td>
+                                @if (item.DocumentId != null)
+                                {
+                                    <a asp-action="DownloadDocument" asp-route-id="@item.DocumentId">Download</a>
+                                }
                             </td>
                             <td>
                                 @if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)

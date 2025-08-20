@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using LeaveManagementSystem4.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 
 namespace LeaveManagementSystem4.Data
 {
@@ -27,6 +29,10 @@ namespace LeaveManagementSystem4.Data
         public DbSet<Period> Periods { get; set; } // DbSet for Period entity
         public DbSet<LeaveRequestStatus> LeaveRequstStatuses { get; set; } // DbSet for LeaveRequstStatus entity
         public DbSet<LeaveRequest> LeaveRequests { get; set; } // DbSet for LeaveRequest entity
+        //public object LeaveRequestDocuments { get; set; }
+        public DbSet<LeaveRequestDocument> LeaveRequestDocuments { get; set; }
+
+        public DbSet<LeaveDocument> LeaveDocuments { get; set; }
 
     }
 }

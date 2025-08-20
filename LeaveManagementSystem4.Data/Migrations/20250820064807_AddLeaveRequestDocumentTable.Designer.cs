@@ -4,6 +4,7 @@ using LeaveManagementSystem4.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeaveManagementSystem4.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250820064807_AddLeaveRequestDocumentTable")]
+    partial class AddLeaveRequestDocumentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,7 +105,7 @@ namespace LeaveManagementSystem4.Data.Migrations
                         {
                             Id = "a870ae16-96eb-48f6-bb0c-43fe09593c28",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "102abd15-6aa2-405d-9c08-b671327128e8",
+                            ConcurrencyStamp = "5c2f3093-c5de-4dda-9acf-dcc66b8ebf20",
                             DateOfBirth = new DateOnly(1990, 11, 1),
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
@@ -111,9 +114,9 @@ namespace LeaveManagementSystem4.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECx9Aga/rVz39Z4+fHdXhVqHMKJNk6+X5Z2BLTl/1Zq/XDkoFajyLwCkaHuTpllEqw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFyrUd9GhhBTWI2lALQGbsD2tXsQI2MPiyyB5ufHLun+AiVKU61zlilDEzNoxbYrfw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "23347ab8-4b33-45e3-8076-7954de6a96e8",
+                            SecurityStamp = "7155c678-c115-4cf3-add9-7621b1dc9300",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -149,36 +152,6 @@ namespace LeaveManagementSystem4.Data.Migrations
                     b.HasIndex("PeriodId");
 
                     b.ToTable("LeaveAllocations");
-                });
-
-            modelBuilder.Entity("LeaveManagementSystem4.Data.LeaveDocument", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("FileContent")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("LeaveRequestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LeaveRequestId");
-
-                    b.ToTable("LeaveDocuments");
                 });
 
             modelBuilder.Entity("LeaveManagementSystem4.Data.LeaveRequest", b =>
@@ -527,17 +500,6 @@ namespace LeaveManagementSystem4.Data.Migrations
                     b.Navigation("LeaveType");
 
                     b.Navigation("Period");
-                });
-
-            modelBuilder.Entity("LeaveManagementSystem4.Data.LeaveDocument", b =>
-                {
-                    b.HasOne("LeaveManagementSystem4.Data.LeaveRequest", "LeaveRequest")
-                        .WithMany()
-                        .HasForeignKey("LeaveRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LeaveRequest");
                 });
 
             modelBuilder.Entity("LeaveManagementSystem4.Data.LeaveRequest", b =>
