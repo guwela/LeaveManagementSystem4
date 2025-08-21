@@ -75,6 +75,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    
 
     <script>
         (function () {
@@ -133,7 +134,7 @@
                     }
 
                     // If server returned form again with validation errors
-                    const html = await res.text();
+                    const html = await res.text(); 
                     bodyEl.innerHTML = html;
                     wireUpCreateForm();
                 });

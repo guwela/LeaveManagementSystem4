@@ -60,6 +60,7 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th>Employee Name</th>
                             <th>@Html.DisplayNameFor(model => model.LeaveRequests[0].LeaveType)</th>
                             <th>@Html.DisplayNameFor(model => model.LeaveRequests[0].StartDate)</th>
                             <th>@Html.DisplayNameFor(model => model.LeaveRequests[0].EndDate)</th>
@@ -81,6 +82,7 @@
                             };
 
                             <tr>
+                                <td>@item.EmployeeFirstName @item.EmployeeLastName</td>
                                 <td>@Html.DisplayFor(modelItem => item.LeaveType)</td>
                                 <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
                                 <td>@Html.DisplayFor(modelItem => item.EndDate)</td>

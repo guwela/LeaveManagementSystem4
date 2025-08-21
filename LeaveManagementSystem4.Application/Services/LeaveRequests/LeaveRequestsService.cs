@@ -29,9 +29,17 @@ public partial class LeaveRequestsService(IMapper _mapper,
             LeaveType = x.LeaveType.Name,
             LeaveRequestStatus = (LeaveRequestStatusEnum)x.LeaveRequstStatusId,
             DocumentId = _context.LeaveRequestDocuments
-                 .Where(d => d.LeaveRequestId == x.Id)
-                 .Select(d => (int?)d.Id)
-                 .FirstOrDefault()
+         .Where(d => d.LeaveRequestId == x.Id)
+         .Select(d => (int?)d.Id)
+         .FirstOrDefault(),
+            EmployeeFirstName = _context.Users
+        .Where(u => u.Id == x.EmployeeId)
+        .Select(u => u.FirstName)
+        .FirstOrDefault(),
+            EmployeeLastName = _context.Users
+        .Where(u => u.Id == x.EmployeeId)
+        .Select(u => u.LastName)
+        .FirstOrDefault()
         }).ToList();
 
 
@@ -56,39 +64,39 @@ public partial class LeaveRequestsService(IMapper _mapper,
     }
 
     public async Task CreateLeaveRequest(LeaveRequestCreateVM model)
-{
-    var user = await _userService.GetLoggedInUser(); // Get the logged-in user
-
-    var leaveRequest = new LeaveRequest
     {
-        StartDate = model.StartDate,
-        EndDate = model.EndDate,
-        LeaveTypeId = model.LeaveTypeId,
-        RequestComments = model.RequestComments,
-        EmployeeId = user.Id, // Set the EmployeeId here!
-        LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Pending // Optional: set default status
-    };
+        var user = await _userService.GetLoggedInUser(); // Get the logged-in user
 
-    _context.LeaveRequests.Add(leaveRequest);
-    await _context.SaveChangesAsync();
-
-    if (model.Document != null && model.Document.Length > 0)
-    {
-        using var ms = new MemoryStream();
-        await model.Document.CopyToAsync(ms);
-
-        var doc = new LeaveRequestDocument
+        var leaveRequest = new LeaveRequest
         {
-            LeaveRequestId = leaveRequest.Id,
-            DocumentName = model.Document.FileName,
-            ContentType = model.Document.ContentType,
-            FileContent = ms.ToArray()
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            LeaveTypeId = model.LeaveTypeId,
+            RequestComments = model.RequestComments,
+            EmployeeId = user.Id, // Set the EmployeeId here!
+            LeaveRequstStatusId = (int)LeaveRequestStatusEnum.Pending // Optional: set default status
         };
 
-        _context.LeaveRequestDocuments.Add(doc);
+        _context.LeaveRequests.Add(leaveRequest);
         await _context.SaveChangesAsync();
+
+        if (model.Document != null && model.Document.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            await model.Document.CopyToAsync(ms);
+
+            var doc = new LeaveRequestDocument
+            {
+                LeaveRequestId = leaveRequest.Id,
+                DocumentName = model.Document.FileName,
+                ContentType = model.Document.ContentType,
+                FileContent = ms.ToArray()
+            };
+
+            _context.LeaveRequestDocuments.Add(doc);
+            await _context.SaveChangesAsync();
+        }
     }
-}
 
 
     public async Task<LeaveRequestDocument?> GetDocumentById(int id)

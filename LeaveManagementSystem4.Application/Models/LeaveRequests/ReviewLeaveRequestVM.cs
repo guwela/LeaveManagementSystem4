@@ -11,7 +11,7 @@
         public int? DocumentId { get; set; } // nullable if no document
 
         [Display(Name = "Document Name")]
-        public string? DocumentName { get; set; }
+        public string? DocumentName { get; set; } // Name of the uploaded document
 
     }
 }

@@ -13,6 +13,6 @@ namespace LeaveManagementSystem4.Application.Services.LeaveRequests
         Task<ReviewLeaveRequestVM> ReviewLeaveRequstForReview(int id);
 
         Task<LeaveRequestDocument?> GetDocumentById(int id); // Method to get a leave request document by ID
-        // Removed duplicate Task<LeaveDocument?> GetDocumentById(int id);
+        
     }
 }

@@ -23,7 +23,13 @@
         [Display(Name = "Document ID")]
         public int? DocumentId { get; set; }
 
-        
+        [Display(Name = "Employee First Name")]
+        public string EmployeeFirstName { get; set; }
+
+        [Display(Name = "Employee Last Name")]
+        public string EmployeeLastName { get; set; }
+
+
 
     }
 }
